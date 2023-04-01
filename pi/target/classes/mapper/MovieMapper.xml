@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team.pi.demo.mapper.MovieMapper">
+
+
+
+    <resultMap type="team.pi.demo.pojo.Movie"
+               id="MovieResultMap">
+        <id property="id" column="id" />
+        <result property="tmdbid" column="tmdbid" />
+        <result property="original_language" column="original_language" />
+        <result property="original_title" column="original_title" />
+        <result property="overview" column="overview" />
+        <result property="budget" column="budget" />
+        <result property="adult" column="adult" />
+        <result property="popularity" column="popularity" />
+        <result property="release_date" column="release_date" />
+        <result property="revenue" column="revenue" />
+        <result property="runtime" column="runtime" />
+        <result property="status" column="status" />
+        <result property="tagline" column="tagline" />
+        <result property="title" column="title" />
+        <result property="vote_average" column="vote_average" />
+        <result property="vote_count" column="vote_count" />
+        <result property="poster_path" column="poster_path" />
+        <result property="deleted" column="deleted" />
+        <!-- 多对一关联映射:association    专辑-->
+        <association property="movieCollection"
+                     javaType="team.pi.demo.pojo.MovieCollection">
+            <id property="id" column="mc.id" />
+            <result property="name" column="mc.name" />
+            <result property="deleted" column="mc.deleted" />
+        </association>
+
+        <!-- 生产公司-->
+        <collection property="companies" ofType="team.pi.demo.pojo.Company">
+            <id column="com.id" property="id"/>
+            <result column="com.name" property="name"/>
+            <result column="com.deleted" property="deleted"/>
+        </collection>
+
+        <!-- 关键字-->
+        <collection property="keywords" ofType="team.pi.demo.pojo.Keyword">
+            <id column="k.id" property="id"/>
+            <result column="k.name" property="name"/>
+            <result column="k.deleted" property="deleted"/>
+        </collection>
+
+        <!-- 种类-->
+        <collection property="genres" ofType="team.pi.demo.pojo.Genres">
+            <id column="gen.id" property="id"/>
+            <result column="gen.name" property="name"/>
+            <result column="gen.deleted" property="deleted"/>
+        </collection>
+
+        <!-- 生产国家-->
+        <collection property="countries" ofType="team.pi.demo.pojo.Country">
+            <id column="coun.id" property="id"/>
+            <result column="coun.name" property="name"/>
+            <result column="coun.iso" property="iso"/>
+            <result column="coun.deleted" property="deleted"/>
+        </collection>
+
+        <!-- 语言-->
+        <collection property="languages" ofType="team.pi.demo.pojo.Language">
+            <id column="lan.id" property="id"/>
+            <result column="lan.name" property="name"/>
+            <result column="lan.iso" property="iso"/>
+            <result column="lan.deleted" property="deleted"/>
+        </collection>
+
+        <!-- 参演人员-->
+        <collection property="casts" ofType="team.pi.demo.pojo.MovieCastRelation">
+            <id column="mcastr.cast_id" property="cast_id"/>
+            <id column="mcastr.movie_id" property="movie_id"/>
+            <result column="mcastr.character" property="character"/>
+            <result column="mcastr.order" property="order"/>
+            <result column="mcastr.deleted" property="deleted"/>
+        </collection>
+
+        <!-- 工作人员-->
+        <collection property="crews" ofType="team.pi.demo.pojo.MovieCrewRelation">
+            <id column="mcrewr.crew_id" property="crew_id"/>
+            <id column="mcrew.crew_id" property="crew_id"/>
+            <result column="mcrewr.department" property="department"/>
+            <result column="mcrewr.job" property="job"/>
+            <result column="mcrewr.deleted" property="deleted"/>
+        </collection>
+    </resultMap>
+
+<!--根据电影全名搜索全部数据-->
+    <select id="selectByMovieName" resultMap="MovieResultMap">
+        SELECT
+        m.*,
+        mc.id 'mc.id',mc.name 'mc.name',mc.deleted 'mc.deleted',
+        com.id 'com.id',com.name 'com.name',com.deleted 'com.deleted',
+        k.id 'k.id',k.name 'k.name',k.deleted 'k.deleted',
+        gen.id ' gen.id',gen.name 'gen.name',gen.deleted 'gen.deleted',
+        coun.id 'coun.id',coun.name 'coun.name',coun.iso 'coun.iso',coun.deleted 'coun.deleted',
+        lan.id 'lan.id',lan.name 'lan.name',lan.iso 'lan.iso',lan.deleted 'lan.deleted',
+        mcastr.cast_id  'mcastr.cast_id',mcastr.movie_id  'mcastr.movie_id',mcastr.character 'mcastr.character',mcastr.order 'mcastr.order',mcastr.deleted 'mcastr.deleted',
+        mcrewr.crew_id 'mcrewr.crew_id',mcrewr.movie_id 'mcrewr.movie_id',mcrewr.department 'mcrewr.department',mcrewr.job 'mcrewr.job',mcrewr.deleted 'mcrewr.deleted'
+        FROM
+        movie_metadata m LEFT JOIN movie_collection mc ON m.belongs_to_collection=mc.id
+        LEFT JOIN movie_keyword_relation mkr ON m.id=mkr.movie_id
+        LEFT JOIN keywords k ON mkr.keyword_id=k.id
+        LEFT JOIN movie_company_relation mcompanyr ON m.id=mcompanyr.movie_id
+        LEFT JOIN companies com ON mcompanyr.com_id=com.id
+        LEFT JOIN movie_genres_relation mgenrer ON m.id=mgenrer.movie_id
+        LEFT JOIN genres gen ON mgenrer.genre_id=gen.id
+        LEFT JOIN movie_country_relation mcounr ON m.id=mcounr.movie_id
+        LEFT JOIN countries coun ON mcounr.country_id=coun.id
+        LEFT JOIN movie_language_relation mlanr ON m.id=mlanr.movie_id
+        LEFT JOIN language lan ON mlanr.language_id=lan.id
+        LEFT JOIN movie_cast_relation mcastr ON m.id=mcastr.movie_id
+        LEFT JOIN person per ON mcastr.cast_id=per.id
+        LEFT JOIN movie_crew_relation mcrewr ON m.id=mcrewr.movie_id
+        LEFT JOIN person per1 ON mcrewr.crew_id=per1.id
+        WHERE m.title=#{title}
+    </select>
+
+
+
+<!--    模糊查询只收集电影基本属性数据-->
+    <select id="selectByVagueMovieName" resultMap="MovieResultMap">
+        select *
+        from movie_metadata m
+        where title like concat('%',#{title},'%');
+    </select>
+
+    <select id="selectByMovieId" resultMap="MovieResultMap">
+        SELECT
+            m.*,
+            mc.id 'mc.id',mc.name 'mc.name',mc.deleted 'mc.deleted',
+                com.id 'com.id',com.name 'com.name',com.deleted 'com.deleted',
+                k.id 'k.id',k.name 'k.name',k.deleted 'k.deleted',
+                gen.id ' gen.id',gen.name 'gen.name',gen.deleted 'gen.deleted',
+                coun.id 'coun.id',coun.name 'coun.name',coun.iso 'coun.iso',coun.deleted 'coun.deleted',
+                lan.id 'lan.id',lan.name 'lan.name',lan.iso 'lan.iso',lan.deleted 'lan.deleted',
+                mcastr.cast_id  'mcastr.cast_id',mcastr.movie_id  'mcastr.movie_id',mcastr.character 'mcastr.character',mcastr.order 'mcastr.order',mcastr.deleted 'mcastr.deleted',
+                mcrewr.crew_id 'mcrewr.crew_id',mcrewr.movie_id 'mcrewr.movie_id',mcrewr.department 'mcrewr.department',mcrewr.job 'mcrewr.job',mcrewr.deleted 'mcrewr.deleted'
+        FROM
+            movie_metadata m LEFT JOIN movie_collection mc ON m.belongs_to_collection=mc.id
+                             LEFT JOIN movie_keyword_relation mkr ON m.id=mkr.movie_id
+                             LEFT JOIN keywords k ON mkr.keyword_id=k.id
+                             LEFT JOIN movie_company_relation mcompanyr ON m.id=mcompanyr.movie_id
+                             LEFT JOIN companies com ON mcompanyr.com_id=com.id
+                             LEFT JOIN movie_genres_relation mgenrer ON m.id=mgenrer.movie_id
+                             LEFT JOIN genres gen ON mgenrer.genre_id=gen.id
+                             LEFT JOIN movie_country_relation mcounr ON m.id=mcounr.movie_id
+                             LEFT JOIN countries coun ON mcounr.country_id=coun.id
+                             LEFT JOIN movie_language_relation mlanr ON m.id=mlanr.movie_id
+                             LEFT JOIN language lan ON mlanr.language_id=lan.id
+                             LEFT JOIN movie_cast_relation mcastr ON m.id=mcastr.movie_id
+                             LEFT JOIN person per ON mcastr.cast_id=per.id
+                             LEFT JOIN movie_crew_relation mcrewr ON m.id=mcrewr.movie_id
+                             LEFT JOIN person per1 ON mcrewr.crew_id=per1.id
+        WHERE m.id=#{id}
+    </select>
+
+
+    <insert id="insertAll">
+        insert into movie_metadata( id, tmdbid, original_language, original_title, overview,
+        budget, adult, popularity, release_date, revenue, runtime, status, tagline, title,
+        vote_average, vote_count, poster_path, deleted, movieCollection)
+        values(#{id},#{tmdbid},#{original_language},#{original_title},#{overview},
+        #{budget},#{adult},#{popularity},#{release_date},#{revenue},#{runtime},#{status},#{tagline},#{title},
+        #{vote_average},#{vote_count},#{poster_path},#{deleted},#{movieCollection.id})
+    </insert>
+
+
+</mapper>
