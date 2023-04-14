@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team.pi.demo.mapper.UserMapper">
+
+    <resultMap type="team.pi.demo.pojo.User"
+               id="UserResultMap">
+        <id column="user_id" property="id"/>
+        <result column="nickname" property="nickName"/>
+        <result column="username" property="userName"/>
+        <result column="password" property="password"/>
+        <result column="avartar" property="avartar"/>
+        <result column="deleted" property="deleted"/>
+        <result column="email" property="email"/>
+        <result column="belongs_to_collection" property="collection"/>
+        <result column="active" property="active"/>
+        <result column="code" property="code"/>
+    </resultMap>
+
+    <select id="findAll" resultType="User">
+        select * from user;
+    </select>
+
+    <select id="selectUserByname" resultMap="UserResultMap">
+        select * from user where username=#{username};
+    </select>
+
+    <insert id="insertUser" parameterType="User">
+        insert into user(nickname,username,password,email,active,code) values(#{user.nickName},#{user.userName},#{user.password},#{user.email},#{user.active},#{user.code});
+    </insert>
+
+    <select id="selectUserByCode" resultType="User">
+        select * from user where code=#{code};
+    </select>
+
+    <update id="updateStatusByUserName" parameterType="String">
+        update user set active = 1 where username = #{username};
+    </update>
+
+    <update id="updateUser">
+        update user
+        <set>
+            <if test=" nickName != null and nickName != ''">
+                nickname=#{nickName},
+            </if>
+
+            <if test=" password != null and password != ''">
+                password=#{password},
+            </if>
+
+            <if test=" avartar != null and avartar != ''">
+                avartar=#{avartar},
+            </if>
+
+            <if test=" email != null and email != ''">
+                email=#{email},
+            </if>
+
+            <if test=" userName != null and userName != ''">
+                username=#{userName}
+            </if>
+        </set>
+        <where>
+            username=#{userName}
+        </where>
+    </update>
+</mapper>
