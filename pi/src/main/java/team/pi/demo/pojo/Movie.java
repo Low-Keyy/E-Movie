@@ -21,7 +21,7 @@ public class Movie {
     private  int               budget;
     private  int               adult;
     private  double            popularity;
-    private Date               release_date;
+    private String               release_date;
     private Long               revenue;
     private int                runtime;
     private String             status;

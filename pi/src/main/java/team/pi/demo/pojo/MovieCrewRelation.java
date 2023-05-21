@@ -9,6 +9,7 @@ public class MovieCrewRelation {
 
     private int         crew_id;
     private int         movie_id;
+    private String      movie_title;
     private String      department;
     private String      job;
     private int         deleted;

@@ -1,5 +1,8 @@
 package team.pi.demo.utils;
 
+import java.util.HashSet;
+import java.util.Set;
+
 //项目的常量类
 public class Constants {
     /**
@@ -39,7 +42,7 @@ public class Constants {
     public static final int TOKEN_EXPIRED = 401;
 
     public static final int UPDATE_TOKEN_SUCCESS = 1;
-    public static final int TOKEN_VALIDITY = 300000000;    //单位秒 60*5
+    public static final long TOKEN_VALIDITY = 300000000;    //单位秒 60*5
 
 
     public static final int RESP_SUCCESS =200;

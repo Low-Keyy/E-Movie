@@ -11,6 +11,7 @@ public class UserMoviePlay {
     private String userName;
     private int user_id;
     private int movie_id;
-    private Long startTime;
-    private Long endTime;
+    private String Time;
+    int deleted;
+    private Movie movie;
 }

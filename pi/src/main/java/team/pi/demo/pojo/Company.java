@@ -12,6 +12,6 @@ public class Company {
     private String  name;
     private int     deleted;
 
-    private List<Movie> movieList;
+    public List<Keyword> movieList;
 
 }

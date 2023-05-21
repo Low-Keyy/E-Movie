@@ -12,12 +12,13 @@ public interface MovieMapper {
 
     List<Movie> selectByMovieName(@Param("title") String title) ;
 
-    Movie selectByMovieId(@Param("id") String id) ;
+    List<Movie> selectByMovieId(@Param("id") String id) ;
 
     List<Movie> selectByVagueMovieName(@Param("title") String title) ;
 
     int insertAll(Movie movie);
 
-
     int updateMovie(Movie movie);
+
+    List<Movie> findAll();
 }

@@ -15,6 +15,7 @@
         <result column="belongs_to_collection" property="collection"/>
         <result column="active" property="active"/>
         <result column="code" property="code"/>
+        <result column="role" property="role"/>
 
         <collection property="movieCollect" ofType="team.pi.demo.pojo.Movie">
             <id property="id" column="mmc.id" />
@@ -78,7 +79,7 @@
         mmp.status "mmp.status",mmp.tagline "mmp.tagline",mmp.title "mmp.title",
         mmp.vote_average "mmp.vote_average",mmp.vote_count "mmp.vote_count",
         mmp.poster_path "mmp.poster_path",mmp.deleted "mmp.deleted"
-        FROM user 
+        FROM user
             LEFT JOIN user_movies_collect umc ON user.user_id = umc.user_id
             LEFT JOIN movie_metadata mmc on umc.movie_id = mmc.id
             LEFT JOIN user_movies_play ump ON user.user_id = ump.user_id
@@ -96,12 +97,13 @@
 <!--    </select>-->
 
     <insert id="insertUser" parameterType="User">
-        insert into user(nickname,username,password,email,active,code) values(#{user.nickName},#{user.userName},#{user.password},#{user.email},#{user.active},#{user.code});
+        insert into user(nickname,username,password,email,active,code,avartar) values(#{user.nickName},#{user.userName},#{user.password},#{user.email},#{user.active},#{user.code},#{user.avartar});
     </insert>
 
     <select id="selectUserByCode" resultType="User">
         select * from user where code=#{code};
     </select>
+
 
     <update id="updateStatusByUserName" parameterType="String">
         update user set active = 1 where username = #{username};

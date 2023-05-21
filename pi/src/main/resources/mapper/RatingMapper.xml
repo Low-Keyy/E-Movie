@@ -9,6 +9,13 @@
         value(#{user_id},#{movie_id},#{rating},#{timestamp})
     </insert>
 
+    <update id="update">
+        UPDATE ratings set rating = #{rating},timestamp=#{timestamp} where user_id=#{user_id} and movie_id=#{movie_id}
+    </update>
+
+    <select id="select" resultType="java.lang.Double">
+        select rating from ratings where user_id=#{user_id} and movie_id=#{movie_id}
+    </select>
 
 
 </mapper>

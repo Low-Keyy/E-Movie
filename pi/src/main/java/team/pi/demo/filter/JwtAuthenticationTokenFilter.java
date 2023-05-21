@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 import static team.pi.demo.utils.Constants.TOKEN_EXPIRED;
+import static team.pi.demo.utils.Constants.TOKEN_VALIDITY;
 
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
@@ -44,18 +45,23 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             userid = claims.getSubject();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("token非法");
+            filterChain.doFilter(request, response);
+            System.out.println("token非法");
         }
         //从redis中获取用户信息
         LoginUser loginUser = redisCache.getCacheObject(token);
         if(Objects.isNull(loginUser)){
-            throw  new RuntimeException("token过期");
+            filterChain.doFilter(request, response);
+            System.out.println("token过期");
         }
+        //TOKEN续期
+        redisCache.expire(token,TOKEN_VALIDITY*6);//半小时
         //存入SecurityContextHolder
-        //TODO 获取权限信息封装到Authentication中
+        //获取权限信息封装到Authentication中
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginUser,null,loginUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
         //放行
         filterChain.doFilter(request, response);
     }

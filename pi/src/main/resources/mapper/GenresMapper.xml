@@ -7,9 +7,20 @@
 
 
     <insert id="insertAll">
-        insert into genres( name)
+        insert into genres(name)
         values(#{name})
     </insert>
 
+    <select id="selectByname" resultType="team.pi.demo.pojo.Genres">
+        select * from genres where name like concat('%',#{name},'%')
+    </select>
 
+    <select id="selectByGenresMovieRelation" parameterType="team.pi.demo.pojo.GenresMovieRelation" resultType="team.pi.demo.pojo.GenresMovieRelation">
+        select * from movie_genres_relation where movie_id=#{movie_id} and genre_id=#{genre_id}
+    </select>
+
+    <insert id="insertRelation" parameterType="team.pi.demo.pojo.GenresMovieRelation">
+        insert into movie_genres_relation(movie_id,genre_id)
+        values (#{movie_id},#{genre_id})
+    </insert>
 </mapper>

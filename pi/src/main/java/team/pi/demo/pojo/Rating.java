@@ -9,6 +9,6 @@ public class Rating {
     private  String username;
     private  int    movie_id;
     private  float  rating;
-    private  Long   timestamp;
+    private  String   timestamp;
     private  int    deleted;
 }

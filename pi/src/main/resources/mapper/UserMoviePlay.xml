@@ -2,10 +2,48 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="team.pi.demo.mapper.UserMoviePlayMapper">
+    <resultMap id="UserMoviePlayMap" type="team.pi.demo.pojo.UserMoviePlay">
+        <id property="user_id" column="user_id"/>
+        <id property="movie_id" column="movie_id"/>
+        <result property="time" column="time"/>
+        <result property="deleted" column="deleted"/>
+        <association property="movie" javaType="team.pi.demo.pojo.Movie">
+            <id property="id" column="id" />
+            <result property="tmdbid" column="tmdbid" />
+            <result property="original_language" column="original_language" />
+            <result property="original_title" column="original_title" />
+            <result property="overview" column="overview" />
+            <result property="budget" column="budget" />
+            <result property="adult" column="adult" />
+            <result property="popularity" column="popularity" />
+            <result property="release_date" column="release_date" />
+            <result property="revenue" column="revenue" />
+            <result property="runtime" column="runtime" />
+            <result property="status" column="status" />
+            <result property="tagline" column="tagline" />
+            <result property="title" column="title" />
+            <result property="vote_average" column="vote_average" />
+            <result property="vote_count" column="vote_count" />
+            <result property="poster_path" column="poster_path" />
+            <result property="deleted" column="mv.deleted" />
+        </association>
 
+    </resultMap>
 
     <insert id="insert">
-        insert into user_movies_play (user_id,movie_id,startTime,endTime)
-        values (#{user_id},#{movie_id},#{startTime},#{endTime})
+        insert into user_movies_play (user_id,movie_id,Time)
+        values (#{user_id},#{movie_id},#{Time})
     </insert>
+
+    <update id="delete">
+        update user_movies_play set deleted = #{user_id} where user_id = #{user_id} and movie_id=#{movie_id} and Time=#{Time}
+    </update>
+
+    <select id="findUserAll" resultMap="UserMoviePlayMap">
+        select ump.*,mv.* from user_movies_play ump LEFT JOIN movie_metadata mv ON ump.movie_id=mv.id
+    where ump.user_id= #{userid}
+    </select>
+    <select id="selectUserMovie" parameterType="team.pi.demo.pojo.UserMoviePlay" resultType="team.pi.demo.pojo.UserMoviePlay">
+        select * from user_movies_play where user_id= #{user_id} and movie_id=#{movie_id} and Time=#{Time}
+    </select>
 </mapper>

@@ -14,9 +14,11 @@
         <collection property="movieCastRelations" ofType="team.pi.demo.pojo.MovieCastRelation">
             <id column="mcastr.cast_id" property="cast_id"></id>
             <id column="mcastr.movie_id" property="movie_id"/>
+            <result column="mca.title" property="movie_title"/>
             <result column="mcastr.character" property="character"/>
             <result column="mcastr.order" property="order"/>
             <result column="mcastr.deleted" property="deleted"/>
+            <result column="mcastr.movie.title" property="movie.title"/>
             <!-- 多对一关联映射:association-->
 <!--            <association property="movie" javaType="team.pi.demo.pojo.Movie">-->
 <!--                <result property=""-->
@@ -27,6 +29,7 @@
         <collection property="movieCrewRelations" ofType="team.pi.demo.pojo.MovieCrewRelation">
             <id column="mcrewr.crew_id" property="crew_id"/>
             <id column="mcrewr.movie_id" property="movie_id"/>
+            <result column="mcr.title" property="movie_title"/>
             <result column="mcrewr.department" property="department"/>
             <result column="mcrewr.job" property="job"/>
             <result column="mcrewr.deleted" property="deleted"/>
@@ -40,12 +43,15 @@
         Select
         per.*,
         mcastr.cast_id 'mcastr.cast_id', mcastr.movie_id 'mcastr.movie_id'  , mcastr.character 'mcastr.character', mcastr.order      'mcastr.order'      , mcastr.deleted 'mcastr.deleted' ,
-        mcrewr.crew_id 'mcrewr.crew_id', mcrewr.movie_id 'mcrewr.movie_id'  , mcrewr.deleted   'mcrewr.deleted'  , mcrewr.department 'mcrewr.department' , mcrewr.job     'mcrewr.job'
+        mcrewr.crew_id 'mcrewr.crew_id', mcrewr.movie_id 'mcrewr.movie_id'  , mcrewr.deleted   'mcrewr.deleted'  , mcrewr.department 'mcrewr.department' , mcrewr.job     'mcrewr.job',
+        mcr.title 'mcr.title',mca.title 'mca.title'
         From
         person per LEFT JOIN movie_cast_relation mcastr ON per.id=mcastr.cast_id
         LEFT JOIN movie_crew_relation mcrewr ON per.id=mcrewr.crew_id
+        LEFT JOIN  movie_metadata mcr ON (mcr.id=mcrewr.movie_id and mcr.deleted =0)
+        LEFT JOIN  movie_metadata mca ON (mca.id=mcastr.movie_id and mca.deleted =0)
         Where
-        name=#{name}
+        name like concat(#{name},'%')
     </select>
 
 

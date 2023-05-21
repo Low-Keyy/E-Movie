@@ -12,7 +12,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import team.pi.demo.mapper.UserMapper;
 import team.pi.demo.pojo.LoginUser;
+import team.pi.demo.pojo.RespBean;
 import team.pi.demo.pojo.User;
+import team.pi.demo.utils.Constants;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,11 +28,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userMapper.selectUserByname(username);
+
+
         //如果没有查询到用户就抛出异常
         if(Objects.isNull(user)){
             throw new RuntimeException("用户名或者密码错误");
         }
 
+        if (user.getActive().equals(Constants.USER_NOT_ACTIVE)){
+            throw new RuntimeException("账号未激活");
+        }
+        if (user.getDeleted()!=0){
+            throw new RuntimeException("账号不存在");
+        }
         //把数据封装成UserDetails返回
         return new LoginUser(user);
     }

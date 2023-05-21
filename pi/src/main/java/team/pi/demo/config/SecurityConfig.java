@@ -14,7 +14,6 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import team.pi.demo.filter.JwtAuthenticationTokenFilter;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -23,6 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
     @Autowired
     AuthenticationEntryPoint authenticationEntryPoint;
+    @Autowired
+    AccessDeniedHandler accessDeniedHandler;
 
     //创建BCryptPasswordEncoder注入容器
     @Bean
@@ -51,10 +52,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/swagger-resources/**",
                 "/v2/api-docs",
                 "/v3/api-docs",
-                "/webjars/**").anonymous()
+                "/webjars/**").anonymous();
+//                .antMatchers("/users/hello").permitAll()
 //                .antMatchers("/testCors").hasAuthority("system:dept:list222")
                 // 除上面外的所有请求全部需要鉴权认证
-                .anyRequest().authenticated();
+//                .anyRequest().authenticated();
 
 
         //添加过滤器
@@ -62,8 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //配置异常处理器
         http.exceptionHandling()
                 //配置认证失败处理器
-                .authenticationEntryPoint(authenticationEntryPoint);
-
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler);
         //允许跨域
         http.cors();
     }

@@ -8,4 +8,8 @@ public interface RatingMapper {
 
     int insert(Rating rating);
 
+    int update(Rating rating);
+
+    Double select(Rating rating);
+
 }

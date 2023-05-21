@@ -5,10 +5,8 @@ package team.pi.demo.service;
 * */
 
 
-import team.pi.demo.pojo.RespBean;
-import team.pi.demo.pojo.User;
-import team.pi.demo.pojo.UserMovieCollect;
-import team.pi.demo.pojo.UserMoviePlay;
+import org.springframework.web.multipart.MultipartFile;
+import team.pi.demo.pojo.*;
 
 public interface UserService {
 
@@ -28,4 +26,14 @@ public interface UserService {
     RespBean insertPlayRecord(UserMoviePlay userMoviePlay);
 
     RespBean insertCollectRecord(UserMovieCollect userMovieCollect);
+
+    RespBean verify(String email);
+
+    RespBean changepsw(VerifyUser user);
+
+    RespBean changeAvartars(MultipartFile file, LoginUser loginUser);
+
+    RespBean userInfo(LoginUser loginUser);
+
+    RespBean logout(LoginUser loginUser,String token);
 }

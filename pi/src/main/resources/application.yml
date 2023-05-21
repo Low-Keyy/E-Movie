@@ -2,13 +2,15 @@ server:
   port: 8080
 
 config-attributes:
-#   database: 127.0.0.1
-  database: 114.116.221.53
+   database: 127.0.0.1
+#  database: 123.249.101.81
 
 spring:
+  main:
+    allow-circular-references: true
   redis:
     database: 0
-    host: ${config-attributes.database}         # Redis服务器地址
+    host: 127.0.0.1        # Redis服务器地址
     port: 6379              # Redis服务器连接端口
     password:               # Redis服务器连接密码（默认为空）
     pool:
@@ -21,8 +23,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${config-attributes.database}:3306/project?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
-#    password: Cyt123456!
-    password: 159357
+    password: Cyt123456!
+#    password: 123456
     hikari:
       pool-name: DateHikariCP
       minimum-idle: 5
@@ -38,3 +40,8 @@ spring:
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: team.pi.demo.pojo
+
+#配置pagehelper的内容
+pagehelper:
+  helper-dialect: mysql
+

@@ -36,6 +36,8 @@ public class User implements Serializable {
     private Integer active;
     @ApiModelProperty(value = "用户邮箱激活码")
     private String code;
+    @ApiModelProperty(value = "权限")
+    private String role;
 
     private List<Movie> movieCollect;
     private List<Movie> moviePlay;

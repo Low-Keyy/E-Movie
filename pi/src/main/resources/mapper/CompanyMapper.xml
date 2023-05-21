@@ -40,6 +40,6 @@
         From
         companies com LEFT JOIN movie_company_relation mcr ON  com.id=mcr.com_id
         LEFT JOIN movie_metadata m ON m.id=mcr.movie_id
-        Where name=#{companyName}
+        Where name like concat(#{companyName},'%')
     </select>
 </mapper>

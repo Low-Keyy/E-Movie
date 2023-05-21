@@ -14,5 +14,5 @@ public class Keyword {
     private String   name;
     private int   deleted;
 
-    private List<Movie> movies;
+    public List<Movie> movies;
 }
