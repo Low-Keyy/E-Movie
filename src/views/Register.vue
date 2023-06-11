@@ -5,17 +5,17 @@
     <el-form ref="ruleFormRef" :model="form" :rules="rules" status-icon>
       <h2 style="text-align: center; color: white">注 册</h2>
       <el-form-item prop="username">
-        <el-input v-model="form.username" placeholder="请输入账号" :prefix-icon="User"></el-input>
+        <el-input v-model="form.userName" placeholder="请输入账号" :prefix-icon="User"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="form.name" placeholder="请设置昵称" :prefix-icon="EditPen"></el-input>
+        <el-input v-model="form.nickName" placeholder="请设置昵称" :prefix-icon="EditPen"></el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="form.password" show-password placeholder="请输入密码" :prefix-icon="Lock"
+        <el-input v-model="form.password1" show-password placeholder="请输入密码" :prefix-icon="Lock"
                   autocomplete="new-password"></el-input>
       </el-form-item>
       <el-form-item prop="confirm">
-        <el-input v-model="form.confirm" show-password placeholder="请确认密码" :prefix-icon="Lock"
+        <el-input v-model="form.password2" show-password placeholder="请确认密码" :prefix-icon="Lock"
                   autocomplete="new-password"></el-input>
       </el-form-item>
       <el-form-item prop="email">
@@ -64,18 +64,18 @@ const checkEmail = (rule, value, callback) => {
 }
 
 const rules = reactive({
-  username: [
+  userName: [
     {required: true, message: '请输入账号', trigger: 'blur'},
     {min: 6, max: 16, message: '长度需在6~16之间', trigger: 'blur'},
   ],
-  name: [
+  nickName: [
     {min:2,max: 16, message: '昵称长度需在2~16之间', trigger: 'blur'}
   ],
-  password: [
+  password1: [
     {required: true, message: '请输入密码', trigger: 'blur'},
     {min: 6, max: 24, message: '长度需在6~24之间', trigger: 'blur'},
   ],
-  confirm: [
+  password2: [
     {required: true, message: '请确认密码', trigger: 'blur'},
     {validator: confirmPassword, trigger: 'blur'},
     {min: 6, max: 24, message: '长度需在6~24之间', trigger: 'blur'},
@@ -84,16 +84,16 @@ const rules = reactive({
     {required: true, message: '请验证邮箱', trigger: 'blur'},
     {validator: checkEmail, trigger: 'blur'},
   ],
-  emailCode: [
-    {required: true, message: '请输入验证码', trigger: 'blur'},
-  ]
+  // emailCode: [
+  //   {required: true, message: '请输入验证码', trigger: 'blur'},
+  // ]
 })
 
 const register = () => {
   ruleFormRef.value.validate(valid => {
     // 当valid == true 就可以调用接口了
     if (valid) {
-      request.post("user/register/" + form.username + "/" + form.name + "/" + form.password + "/" + form.confirm + "/" + form.email, form).then(res => {
+      request.post("http://123.249.101.81:8080/users/register", form).then(res => {
         console.log(res)
         console.log(res.message)
         if (res.code == '200') {

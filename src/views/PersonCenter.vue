@@ -10,7 +10,7 @@
         </div>
         <ul style="margin-top: -5px">
           <li @click="changePagePath('myInfo' )" :class="pagePath === 'myInfo' ? 'menu-active' : ''"><el-icon class="menu-icon"><UserFilled /></el-icon> 个人资料</li>
-          <li @click="changePagePath('accountSettings')" :class="pagePath === 'accountSettings' ? 'menu-active' : ''"><el-icon class="menu-icon"><Tools /></el-icon> 账号设置</li>
+<!--          <li @click="changePagePath('accountSettings')" :class="pagePath === 'accountSettings' ? 'menu-active' : ''"><el-icon class="menu-icon"><Tools /></el-icon> 账号设置</li>-->
           <li><el-icon class="menu-icon"><QuestionFilled /></el-icon> 热门问题</li>
           <li><el-icon class="menu-icon"><PhoneFilled /></el-icon> 联系我们</li>
           <li @click="logout"><el-icon class="menu-icon"><RefreshLeft /></el-icon> 退出系统</li>
@@ -30,13 +30,19 @@ import { UserFilled,Tools,QuestionFilled,PhoneFilled,RefreshLeft,ArrowLeftBold }
 import MyInfo from "@/components/MyInfo.vue";
 import AccountSettings from "@/components/AccountSettings.vue";
 import router from "@/router";
-import {inject} from "vue";
+import {computed, inject} from "vue";
 import {useRoute} from "vue-router";
+import {ElMessage} from "element-plus";
+import axios from "axios";
+import {useStore} from "vuex";
+
 
 const reload = inject('reload') // inject和父页面的provide成对出现(App.vue)
 const route = useRoute()
 
+
 const pagePath = route.query.page // 引用url参数：page
+
 
 const changePagePath = (pagePath) => {
   router.push({query: {page: pagePath}}) // page参数更改(不能触发高亮和页面更改)
@@ -45,9 +51,36 @@ const changePagePath = (pagePath) => {
 }
 
 const logout = () => {
-  localStorage.removeItem("user")
+  axios.delete('http://123.249.101.81:8080/users/logout',{headers:{'token': localStorage.getItem('token')}})
+  localStorage.removeItem("token")
+  localStorage.clear();
+  sessionStorage.clear();
+  // 跳转到登录页面
   router.push('/login')
 }
+//
+// // mounted 钩子函数
+// function mounted() {
+//   console.log('组件挂载完成');
+// }
+//
+// // beforeUnmount 钩子函数
+// function beforeUnmount() {
+//   console.log('组件即将卸载');
+// }
+
+// export default {
+//   created,
+//   setup() {
+//     const store = useStore();
+//     const user = computed(() => store.state.userData.obj);
+//     created()
+//     return {
+//       user,
+//     };
+//   },
+// };
+
 </script>
 
 <style scoped>

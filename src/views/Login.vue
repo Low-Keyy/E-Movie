@@ -29,12 +29,15 @@
 
   <el-dialog v-model="passwordVis" title="忘记密码" :close-on-click-modal="false" style="width: 500px; padding: 0 20px">
     <el-form :model="passwordForm" ref="rulePasswordFormRef" :rules="passwordRules" status-icon label-width="70px">
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="passwordForm.email" autocomplete="off"/>
+      <el-form-item label="用户名" prop="userName">
+        <el-input v-model="passwordForm.userName" autocomplete="off"/>
       </el-form-item>
-      <el-form-item label="验证码" prop="emailCode">
+      <el-form-item label="新密码" prop="password">
+        <el-input v-model="passwordForm.password" autocomplete="off"/>
+      </el-form-item>
+      <el-form-item label="验证码" prop="verifyCode">
         <div style="display: flex; width: 100%">
-          <el-input style="flex: 1" v-model="passwordForm.emailCode" clearable></el-input>
+          <el-input style="flex: 1" v-model="passwordForm.verifyCode" clearable></el-input>
           <el-button style="width: 120px; margin-left: 5px" @click="sendEmail" :disabled="time > 0">点击发送<span
               v-if="time">({{ time }})</span></el-button>
         </div>
@@ -42,7 +45,7 @@
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="passwordVis = false">取消</el-button>
+        <el-button @click="passwordVis=false">取消</el-button>
         <el-button type="primary" @click="resetPassword">确认</el-button>
       </span>
     </template>
@@ -57,6 +60,8 @@ import request from "@/utils/request";
 import {ElMessage} from "element-plus";
 import {inject} from "vue";
 import {useStore} from "vuex";
+import axios from 'axios';
+import store from "@/stores/store";
 
 const reload = inject('reload') // inject和父页面的provide成对出现(App.vue)
 const ruleFormRef = ref()
@@ -77,11 +82,14 @@ const rules = reactive({
 })
 
 const passwordRules = reactive({
-  email: [
-    {required: true, message: '请输入账号', trigger: 'blur'},
+  userName: [
+    {required: true, message: '请输入用户名', trigger: 'blur'},
   ],
-  emailCode: [
+  verifyCode: [
     {required: true, message: '请输入验证码', trigger: 'blur'},
+  ],
+  password: [
+    {required: true, message: '请输入新的密码', trigger: 'blur'},
   ],
 })
 
@@ -96,23 +104,22 @@ const login = () => {
     password: form.password
   }
   data = JSON.stringify(data)
-  // console.log(ruleFormRef)
+  console.log(ruleFormRef)
   ruleFormRef.value.validate(valid => {
     // 当valid == true 就可以调用接口了
     if (valid) {
       request.post("http://123.249.101.81:8080/users/login", data).then(res => {
-        // console.log(data)
-        // console.log(res)
-        // 将用户信息存储在 Vuex store 中
         userStore.commit('setUserData', res);
         console.log(userStore.state.userData.obj);
-        console.log(res)
         if (res.code == '200') {
+          // store.$patch({user: res.data}) // res.data 是后台返回的用户数据，存储到缓存里
+          ElMessage.success('登录成功')
           localStorage.setItem('token',res.obj.token)
-          if (res.obj.role == "user") {
-            router.push('/')
+          console.log(localStorage)
+          if (res.obj.role === "user") {
+            router.push('/home')
             reload()
-          } else if (res.obj.role == "admin") {
+          } else if (res.obj.role === "admin") {
             router.push('/management/welcome')
             reload()
           }
@@ -139,23 +146,25 @@ const times = () => {
 
 // 发送邮件
 const sendEmail = () => {
-  const reg = /^\w+((.\w+)|(-\w+))@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+).[A-Za-z0-9]+$/
-  if (!reg.test(passwordForm.email)) {  // test可以校验你的输入值
-    ElMessage.warning("请输入合法的邮箱")
+  // const reg = /^\w+((.\w+)|(-\w+))@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+).[A-Za-z0-9]+$/
+  // if (!reg.test(passwordForm.userName)) {  // test可以校验你的输入值
+  //   ElMessage.warning("请输入合法的邮箱")
+  //   return
+  // }
+  const reg = /^\w{4,16}$/
+  if (!reg.test(form.username)) {
+    console.log("请输入4-16位的用户名")
     return
   }
-
-  request.get("/email", {
-    params: {
-      email: passwordForm.email,
-      type: "RESETPASSWORD"
-    }
-  }).then(res => {
+  let data ={
+    userName: passwordForm.userName
+  }
+  request.get("http://123.249.101.81:8080/users/verify",data).then(res => {
     if (res.code === '200') {
       times()  // 倒计时
       ElMessage.success('发送成功，有效期5分钟')
     } else {
-      ElMessage.error(res.msg)
+      ElMessage.error(res.message)
     }
   })
 }
@@ -173,9 +182,9 @@ const handleResetPassword = () => {
 const resetPassword = () => {
   rulePasswordFormRef.value.validate(valid => {
     if (valid) {
-      request.post("/password/reset", passwordForm).then(res => {
+      request.put("http://123.249.101.81:8080/users/changepsw", passwordForm).then(res => {
         if (res.code === '200') {
-          ElMessage.success('重置成功，您的密码为：' + res.data)
+          ElMessage.success(res.msg)
           passwordVis.value = false
         } else {
           ElMessage.error(res.msg)

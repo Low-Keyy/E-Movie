@@ -1,7 +1,9 @@
 <template>
-  <div style="color: #ffd04b;margin-top: 50px; margin-left: 100px; font-size: xx-large; font-weight: bold">
-    最近浏览
-  </div>
+  <router-link to="/history" >
+    <div style="color: #ffd04b;margin-top: 50px; margin-left: 100px; font-size: xx-large; font-weight: bold">
+      最近浏览
+    </div>
+  </router-link>
   <div v-if="!flag">
     <div>
       <el-scrollbar always="true" style="width: 1200px; margin-left: 100px">

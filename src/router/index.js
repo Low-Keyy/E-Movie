@@ -40,6 +40,11 @@ const router = createRouter({
           component: () => import('../views/SearchKeywords.vue')
         },
         {
+          path: '/history',
+          name: 'History',
+          component: () => import('../views/History.vue')
+        },
+        {
           path: '/personCenter',
           name: 'PersonCenter',
           component: () => import('../views/PersonCenter.vue'),
