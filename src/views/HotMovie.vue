@@ -1,7 +1,4 @@
 <template>
-  <div style="color: white; margin-top: 20px; margin-left: 100px; font-size: x-large; font-weight: bold">
-    热门影片
-  </div>
   <el-scrollbar always="true" style="width: 1200px; margin-left: 100px">
     <div style="color: white; margin-top: 20px; display: flex;">
       <div
@@ -55,7 +52,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {ref, watchEffect} from 'vue';
 import axios from 'axios';
 import {ElMessage} from "element-plus";
 
@@ -91,6 +88,23 @@ const isLoggedIn = () => {
   const token = localStorage.getItem('token');
   return !!token;
 }
+
+watchEffect(() => {
+  if (score.value < 0 || score.value > 5) {
+    score.value = null;
+    ElMessage({
+      message: '分数必须在 0 到 5 之间',
+      type: 'error',
+    });
+  }
+  // else if (score.value !== null && !Number.isInteger(score.value)) {
+  //   score.value = null;
+  //   ElMessage({
+  //     message: '分数必须是整数',
+  //     type: 'error',
+  //   });
+  // }
+});
 
 const scoreMovie = (movieId) => {
   if (!isLoggedIn()) {
@@ -133,6 +147,7 @@ const submitScore = async () => {
     });
   }
 }
+
 </script>
 
 

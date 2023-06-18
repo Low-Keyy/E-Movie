@@ -36,7 +36,7 @@ const search = async () => {
     // 将搜索结果存储在 Vuex store 中
     store.commit('setSearchData', response.data);
     console.log(store.state.searchData.obj);
-    // 在成功获取搜索结果后，跳转到新页面
+    // 在成功获取搜索结果后，跳转到新页面bb vnbbbbb
     if (searchType.value === 'movie') {
       await router.push('/searchResults');
     } else if (searchType.value === 'actor') {

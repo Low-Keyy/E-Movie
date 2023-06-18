@@ -105,7 +105,7 @@ export default {
       if (resp && resp.data && resp.data.code === 200) {
         this.rate = resp.data.message;
       } else {
-        ElMessage(resp?.data?.message || '请求失败')
+        // ElMessage(resp?.data?.message || '请求失败')
       }
     } catch (error) {
       console.log(error)
@@ -115,7 +115,7 @@ export default {
       if (resp && resp.data && resp.data.code === 200) {
         this.rate = resp.data.message;
       } else {
-        ElMessage(resp?.data?.message || '请求失败')
+        // ElMessage(resp?.data?.message || '请求失败')
       }
     } catch (error) {
       console.log(error)

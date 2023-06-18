@@ -13,8 +13,9 @@
             <router-link :to="`/movies/details/${movie.id}`" class="movie-link">
               <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" class="image">
               <div class="up-movie-block">
-                      <span class="font"
-                            style="font-weight: bold; font-size: 17px">{{movie.title}} </span>
+                <div class="font" style="font-weight: bold; font-size: 17px; margin-top: -20px">
+                  <p class="movie-title">{{movie.title}}</p>
+                </div>
                 <div class="bottom clearfix">
                   <div class="bfi">
                     <p class="ellipsis">{{movie.overview}}</p>
@@ -106,7 +107,7 @@ getRecommendations(1).then((recommendations) => {
 }
 
 .bottom {
-  margin-top: 0px;
+  margin-top: -10px;
   line-height: 15px;
 }
 
@@ -176,6 +177,14 @@ getRecommendations(1).then((recommendations) => {
   -webkit-box-orient: vertical; /* 垂直方向排列 */
   -webkit-line-clamp: 5; /* 设置最大行数为5 */
   max-height: 6em; /* 设置文本框的最大高度 */
+  overflow: hidden; /* 隐藏溢出的部分 */
+  text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
+}
+
+.movie-title {
+  white-space: nowrap; /* 防止文本换行 */
+  -webkit-line-clamp: 1; /* 设置最大行数为5 */
+  max-height: 2em; /* 设置文本框的最大高度 */
   overflow: hidden; /* 隐藏溢出的部分 */
   text-overflow: ellipsis; /* 使用省略号表示溢出部分 */
 }
